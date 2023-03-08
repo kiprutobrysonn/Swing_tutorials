@@ -1,10 +1,8 @@
 package swing_tutorial;
 
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -16,11 +14,12 @@ public class CAPTCHA extends JFrame implements ActionListener{
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 1L;
-	//Create  a global submit and checkbox
+	//Create  a global submit and check box
 	
 	JButton submit = new JButton("Submit");
-	//Checkboxes are to select the pictures
+	//Check boxes are to select the pictures
 	JCheckBox box1 = new JCheckBox();
 	JCheckBox box2 = new JCheckBox();
 	JCheckBox box3 = new JCheckBox();
@@ -39,9 +38,7 @@ public class CAPTCHA extends JFrame implements ActionListener{
 		
 		submit.setSize(150,50);
 		submit.setBounds(150, 400, 100, 50);
-		submit.addActionListener(this);;
-		
-		
+		submit.addActionListener(this);		
 		
 		ImageIcon img1= new ImageIcon("C://Users//user//Desktop//workspace//swing_tutorial//src//cap1.jpg");
 		ImageIcon img2= new ImageIcon("C://Users//user//Desktop//workspace//swing_tutorial//src//cap2.jpg");
@@ -100,9 +97,6 @@ public class CAPTCHA extends JFrame implements ActionListener{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Interact();
-		
-		
-
 	}
 
 	@Override
@@ -111,7 +105,7 @@ public class CAPTCHA extends JFrame implements ActionListener{
 		if(e.getSource()==submit) {
 			if(box1.isSelected()&box3.isSelected()&box4.isSelected()||box4.isSelected()&box3.isSelected()&box1.isSelected()||box1.isSelected()&box4.isSelected()&box3.isSelected()||
 					box3.isSelected()&box1.isSelected()&box4.isSelected()) {
-				JOptionPane.showMessageDialog(null,"Confrimed continue");
+				JOptionPane.showMessageDialog(null,"Confirmed continue");
 				Runtime.getRuntime().exit(EXIT_ON_CLOSE);
 			}else if(box1.isSelected()&box3.isSelected()&box4.isSelected()){
 				JOptionPane.showMessageDialog(null,"Invalid Try again","TRY AGAIN",JOptionPane.WARNING_MESSAGE);
