@@ -29,12 +29,10 @@ public class Mybutton extends JFrame implements ActionListener{
 	 public Mybutton() {
 		
 		button.setBounds(100,100,100,50);// sets the size as , start position x,start position y, height and width
-		ImageIcon icon = new ImageIcon(); // An image object
 		button.setBorder(BorderFactory.createEtchedBorder()); //
 		button.setText("OPEN");
 		button.setHorizontalTextPosition(JButton.CENTER);
 		button.setFont(new Font("MV Boli",Font.BOLD,20));
-		button.setIcon(icon);
 		button.setVisible(true);
 		button.addActionListener(this);
 		button.setFocusable(true);
@@ -74,11 +72,12 @@ public class Mybutton extends JFrame implements ActionListener{
 			        label.setForeground(Color.cyan);
 			        label.setFont(new Font("MV Boli",Font.BOLD,20));
 			        label.setIconTextGap(-25);
+			        label.setBounds(0,0,750,620);// Since the layout manager is set to null there must be bounds
 			        
 					JFrame frame = new JFrame();
 			        frame.setVisible(true);
 			       frame.setSize(750,620);
-			        frame.setResizable(true);
+			        frame.setResizable(false);
 			        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			        frame.setLayout(null);
 			        frame.add(label);
