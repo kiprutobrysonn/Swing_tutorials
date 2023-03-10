@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -35,6 +36,7 @@ public class MyNotePad extends JFrame implements ActionListener {
     private JButton wordCountButton = new JButton("Words: 0");
     private JButton charCountButton = new JButton("Characters: 0");
     private JComboBox fontSizeSelector;
+    private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
 
 
     public MyNotePad() {
@@ -173,6 +175,7 @@ public class MyNotePad extends JFrame implements ActionListener {
         editMenu.add(selectAllOption);
 
         JMenuItem deleteOption = new JMenuItem("Delete");
+        deleteOption.setIcon(deleteIcon);
         deleteOption.addActionListener(this);
         editMenu.add(deleteOption);
 
