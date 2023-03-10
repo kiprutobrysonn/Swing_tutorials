@@ -183,7 +183,19 @@ public class MyNotePad extends JFrame implements ActionListener {
         JMenu toolsMenu = new JMenu("Tools");
         toolsMenu.setMnemonic(KeyEvent.VK_T);
         JMenuItem statusBarView = new JMenuItem("View Status Bar");
-        statusBarView.addActionListener(this);
+        statusBarView.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(statusBar.isVisible()) {
+				statusBar.setVisible(false);
+				}else {
+					statusBar.setVisible(true); 
+				}
+			}
+        	
+        });
         toolsMenu.add(statusBarView);
 
         JMenuItem settingsOption= new JMenuItem("Settings");
