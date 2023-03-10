@@ -124,7 +124,7 @@ public class MyNotePad extends JFrame implements ActionListener {
         		
         	}
         };
-        t1.start();
+        Runtime.getRuntime().addShutdownHook(t1.start());
         
        
 
