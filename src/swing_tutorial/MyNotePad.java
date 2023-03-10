@@ -107,27 +107,7 @@ public class MyNotePad extends JFrame implements ActionListener {
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane);
         add(statusBar, BorderLayout.SOUTH);
-        
-        Thread t1 = new Thread() {
-        	public void run() {
-        		JFrame exit = new JFrame();
-        		JProgressBar exitStatus = new JProgressBar();
-        		
-        		exitStatus.setBounds(0,0,400,50);
-        		exitStatus.setBackground(Color.GREEN);
-        		exitStatus.setValue(0);
-        		
-        		exit.add(exitStatus);
-        		exit.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        		exit.pack();
-        		exit.setVisible(true);
-        		
-        	}
-        };
-        Runtime.getRuntime().addShutdownHook(t1.start());
-        
        
-
         setSize(500, 500);
         setLocationRelativeTo(null);
         setVisible(true);
