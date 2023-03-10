@@ -3,20 +3,27 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class MyNotePad extends JFrame {
+public class MyNotePad extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
 
     private JPanel topPanel = new JPanel();
@@ -24,10 +31,18 @@ public class MyNotePad extends JFrame {
     private JTextArea textArea = new JTextArea(10, 50);
     private JButton wordCountButton = new JButton("Words: 0");
     private JButton charCountButton = new JButton("Characters: 0");
+    private JComboBox fontSizeSelector;
+    
 
     public MyNotePad() {
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+       Integer [] fontSize= {0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18,19,20};
+       fontSizeSelector = new JComboBox(fontSize);
+       fontSizeSelector.getSelectedItem();
+       fontSizeSelector.addActionListener(this);
+       
 
         wordCountButton.setEnabled(false);
         wordCountButton.setBorder(BorderFactory.createEmptyBorder(1,1,0,0));
@@ -40,19 +55,20 @@ public class MyNotePad extends JFrame {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 updateWordAndCharCount();
+
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 updateWordAndCharCount();
+           
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
                 updateWordAndCharCount();
-            }
+                            }
         });
-
         JButton fileButton = new JButton("Files");
         fileButton.setBorder(BorderFactory.createEmptyBorder());
         fileButton.setBackground(Color.white);
@@ -73,6 +89,8 @@ public class MyNotePad extends JFrame {
         topPanel.add(viewButton);
         topPanel.add(toolsButton);
         topPanel.add(helpButton);
+       topPanel.add(fontSizeSelector);
+       
 
         statusBar.setPreferredSize(new Dimension(100, 30));
         statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -81,6 +99,7 @@ public class MyNotePad extends JFrame {
         statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
         statusBar.add(wordCountButton);
         statusBar.add(charCountButton);
+       
 
         setTitle("MyNotePad");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -117,4 +136,12 @@ public class MyNotePad extends JFrame {
             }
         });
     }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getSource()==fontSizeSelector) {
+        textArea.setFont(new Font("NewTimes Roman",Font.PLAIN,((Integer) fontSizeSelector.getSelectedItem()).intValue()));
+		}
+		
+	}
 }
