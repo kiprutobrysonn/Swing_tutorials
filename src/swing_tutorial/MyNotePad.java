@@ -13,13 +13,11 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -102,12 +100,33 @@ public class MyNotePad extends JFrame implements ActionListener {
        
 
         setTitle("MyNotePad");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
         setResizable(true);
         setLayout(new BorderLayout());
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane);
         add(statusBar, BorderLayout.SOUTH);
+        
+        Thread t1 = new Thread() {
+        	public void run() {
+        		JFrame exit = new JFrame();
+        		JProgressBar exitStatus = new JProgressBar();
+        		
+        		exitStatus.setBounds(0,0,400,50);
+        		exitStatus.setBackground(Color.GREEN);
+        		exitStatus.setValue(0);
+        		
+        		exit.add(exitStatus);
+        		exit.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        		exit.pack();
+        		exit.setVisible(true);
+        		
+        	}
+        };
+        t1.start();
+        
+       
 
         setSize(500, 500);
         setLocationRelativeTo(null);
@@ -133,8 +152,12 @@ public class MyNotePad extends JFrame implements ActionListener {
             @Override
             public void run() {
                 new MyNotePad();
+                
             }
         });
+        
+       
+        
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -142,6 +165,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 		if(e.getSource()==fontSizeSelector) {
         textArea.setFont(new Font("NewTimes Roman",Font.PLAIN,((Integer) fontSizeSelector.getSelectedItem()).intValue()));
 		}
+		;
 		
 	}
 }
