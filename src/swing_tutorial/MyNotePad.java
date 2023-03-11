@@ -3,20 +3,25 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -26,28 +31,32 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MyNotePad extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
 
-    private JPanel topPanel = new JPanel();
     private JPanel statusBar = new JPanel();
     private JTextArea textArea = new JTextArea(10, 50);
     private JButton wordCountButton = new JButton("Words: 0");
     private JButton charCountButton = new JButton("Characters: 0");
-    private JComboBox fontSizeSelector;
+    private File selectedFile;
+    private JFileChooser fileSelector = new JFileChooser();
     private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
 
 
     public MyNotePad() {
+    	
+    	
+    	fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileSelector.setFileSelectionMode(JFileChooser.FILES_ONLY);
+ 
+        fileSelector.addChoosableFileFilter(new FileNameExtensionFilter("Text Documents", "*.txt"));
+        fileSelector.setAcceptAllFileFilterUsed(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-       Integer [] fontSize= {0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18,19,20};
-       fontSizeSelector = new JComboBox(fontSize);
-       fontSizeSelector.getSelectedItem();
-       fontSizeSelector.addActionListener(this);
-
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        
 
         wordCountButton.setEnabled(false);
         wordCountButton.setBorder(BorderFactory.createEmptyBorder(1,1,0,0));
@@ -56,6 +65,8 @@ public class MyNotePad extends JFrame implements ActionListener {
         charCountButton.setBorder(BorderFactory.createEmptyBorder(1,1,0,0));
 
         textArea.setAutoscrolls(true);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
         textArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -101,15 +112,87 @@ public class MyNotePad extends JFrame implements ActionListener {
         });
 
         JMenuItem openOption = new JMenuItem("Open ");
-        openOption.addActionListener(this);
+        openOption.addKeyListener(null);
+   
+        openOption.addActionListener(new ActionListener() {
+
+			
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				int n =fileSelector.showOpenDialog(null);
+				if(n==JFileChooser.APPROVE_OPTION) {
+					
+					selectedFile = fileSelector.getSelectedFile();
+					
+					try {
+						BufferedReader b = new BufferedReader(new FileReader(selectedFile));
+						String s1="",s2="";                         
+					        while((s1=b.readLine())!=null){    
+					        	s2+=s1+"\n";    
+					        }    
+					        textArea.setText(s2);    
+					        b.close(); 
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(null,"Error file not found", "File not Found", JOptionPane.ERROR_MESSAGE);
+					}
+					
+				}
+				
+			}        	
+        });
 
 
         JMenuItem saveOption = new JMenuItem("Save");
-        saveOption.addActionListener(this);
+        saveOption.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				 int n = fileSelector.showSaveDialog(null);
+	                if (n == JFileChooser.APPROVE_OPTION) {
+	                    File fileSave = new File(fileSelector.getSelectedFile().getAbsolutePath());
+	                    boolean result;
+	                    try {
+	                        result = fileSave.createNewFile(); // creates a new file
+	                        if (result) // test if successfully created a new file
+	                        {
+	                            JOptionPane.showMessageDialog(null, "File Save Successfully", "Saved",
+	                                    JOptionPane.INFORMATION_MESSAGE);// returns the path string
+	                            PrintWriter writerToSaved = new PrintWriter(fileSave);
+	                            writerToSaved.write(textArea.getText());
+	                            writerToSaved.close();
+	                        } else {
+	                            JOptionPane.showMessageDialog(null, "File Already Exists");
+	                           
+	                        }
+	                    } catch (IOException e2) {
+	                        e2.printStackTrace();
+	                    }
+	                }
+				
+			}
+        	
+        });
 
 
-        JMenuItem saveAsOption  = new JMenuItem("Save as");
-        saveAsOption.addActionListener(this);
+        JMenuItem saveAsOption  = new JMenuItem("Save as ...");
+        saveAsOption.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				       
+				        int userSelection = fileSelector.showSaveDialog(null);
+				        if (userSelection == JFileChooser.APPROVE_OPTION) {
+				            File fileToSave = fileSelector.getSelectedFile();
+				
+			}
+			}
+        	
+        });
 
 
         JMenuItem exitOption = new JMenuItem("Exit");
@@ -225,13 +308,6 @@ public class MyNotePad extends JFrame implements ActionListener {
         menu.add(toolsMenu);
         menu.add(helpMenu);
 
-
-        topPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-        topPanel.setPreferredSize(new Dimension(100, 30));
-        topPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-        topPanel.add(fontSizeSelector);
-
-
         statusBar.setPreferredSize(new Dimension(100, 30));
         statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         statusBar.setBackground(Color.gray);
@@ -246,7 +322,6 @@ public class MyNotePad extends JFrame implements ActionListener {
 
         setResizable(true);
         setLayout(new BorderLayout());
-        add(topPanel, BorderLayout.NORTH);
         add(scrollPane);
         add(statusBar, BorderLayout.SOUTH);
         setJMenuBar(menu);
@@ -276,15 +351,14 @@ public class MyNotePad extends JFrame implements ActionListener {
             @Override
             public void run() {
                 new MyNotePad();
+                
             }
         });
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getSource()==fontSizeSelector) {
-        textArea.setFont(new Font("NewTimes Roman",Font.PLAIN,((Integer) fontSizeSelector.getSelectedItem()).intValue()));
-		}
+		
 
 	}
 }
