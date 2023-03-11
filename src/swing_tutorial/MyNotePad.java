@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.StringTokenizer;
@@ -35,11 +36,14 @@ public class MyNotePad extends JFrame implements ActionListener {
     public MyNotePad() {
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+       
         
        Integer [] fontSize= {0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18,19,20};
        fontSizeSelector = new JComboBox(fontSize);
        fontSizeSelector.getSelectedItem();
        fontSizeSelector.addActionListener(this);
+       
        
 
         wordCountButton.setEnabled(false);
@@ -49,6 +53,8 @@ public class MyNotePad extends JFrame implements ActionListener {
         charCountButton.setBorder(BorderFactory.createEmptyBorder(1,1,0,0));
 
         textArea.setAutoscrolls(true);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
         textArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -108,26 +114,6 @@ public class MyNotePad extends JFrame implements ActionListener {
         add(scrollPane);
         add(statusBar, BorderLayout.SOUTH);
         
-        Thread t1 = new Thread() {
-        	public void run() {
-        		JFrame exit = new JFrame();
-        		JProgressBar exitStatus = new JProgressBar();
-        		
-        		exitStatus.setBounds(0,0,400,50);
-        		exitStatus.setBackground(Color.GREEN);
-        		exitStatus.setValue(0);
-        		
-        		exit.add(exitStatus);
-        		exit.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        		exit.pack();
-        		exit.setVisible(true);
-        		
-        	}
-        };
-        Runtime.getRuntime().addShutdownHook(t1.start());
-        
-       
-
         setSize(500, 500);
         setLocationRelativeTo(null);
         setVisible(true);
