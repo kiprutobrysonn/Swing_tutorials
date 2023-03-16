@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -56,6 +57,7 @@ public class MyNotePad extends JFrame implements ActionListener {
         fileSelector.addChoosableFileFilter(new FileNameExtensionFilter("Text Documents", "txt"));
         fileSelector.setAcceptAllFileFilterUsed(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
+        
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         
@@ -284,7 +286,18 @@ public class MyNotePad extends JFrame implements ActionListener {
         toolsMenu.add(statusBarView);
 
         JMenuItem settingsOption= new JMenuItem("Settings");
-        settingsOption.addActionListener(this);
+        settingsOption.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				PageSetup layout = new PageSetup();
+				Insets margin = new Insets(Integer.parseInt(layout.bottomMargin.getText()),Integer.parseInt(layout.toppMargin.getText()),Integer.parseInt(layout.leftMargin.getText()),Integer.parseInt(layout.rightMargin.getText()));
+				textArea.setMargin(margin);
+				
+			}
+        	
+        });
         toolsMenu.add(settingsOption);
 
         // Help menu
