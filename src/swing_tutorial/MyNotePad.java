@@ -46,6 +46,8 @@ public class MyNotePad extends JFrame implements ActionListener {
     private File selectedFile;
     private JFileChooser fileSelector = new JFileChooser();
     private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
+    private Thread t1,t2;
+    static MyNotePad note;
 
 
     public MyNotePad() {
@@ -120,8 +122,6 @@ public class MyNotePad extends JFrame implements ActionListener {
    
         openOption.addActionListener(new ActionListener() {
 
-			
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -141,8 +141,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 					        b.close(); 
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(null,"Error file not found", "File not Found", JOptionPane.ERROR_MESSAGE);
-					}
-					
+					}					
 				}
 				
 			}        	
@@ -191,8 +190,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 				       
 				        int userSelection = fileSelector.showSaveDialog(null);
 				        if (userSelection == JFileChooser.APPROVE_OPTION) {
-				            File fileToSave = fileSelector.getSelectedFile();
-				
+				            File fileToSave = fileSelector.getSelectedFile();				
 			}
 			}
         	
@@ -244,9 +242,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				textArea.cut();
-
 			}
-
         });
         editMenu.add(cutOption);
 
@@ -291,15 +287,16 @@ public class MyNotePad extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				PageSetup layout = new PageSetup();
-				Insets margin = new Insets(Integer.parseInt(layout.bottomMargin.getText()),Integer.parseInt(layout.toppMargin.getText()),Integer.parseInt(layout.leftMargin.getText()),Integer.parseInt(layout.rightMargin.getText()));
-				textArea.setMargin(margin);
 				
-			}
-        	
+						PageSetup layout = new PageSetup();
+						layout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				note.setEnabled(false);
+				
+				Insets margin = new Insets(Integer.parseInt(layout.bottomMargin.getText()),Integer.parseInt(layout.toppMargin.getText()),Integer.parseInt(layout.leftMargin.getText()),Integer.parseInt(layout.rightMargin.getText()));
+				textArea.setMargin(margin);				
+			}        	
         });
         toolsMenu.add(settingsOption);
-
         // Help menu
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic(KeyEvent.VK_H);// Sets the key shortcut to Alt+H
@@ -334,7 +331,6 @@ public class MyNotePad extends JFrame implements ActionListener {
 
         setTitle("MyNotePad");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
         setResizable(true);
         setLayout(new BorderLayout());
         add(scrollPane);
@@ -342,7 +338,6 @@ public class MyNotePad extends JFrame implements ActionListener {
         setJMenuBar(menu);
         Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
         setIconImage(icon);
-
         setSize(500, 500);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -367,7 +362,7 @@ public class MyNotePad extends JFrame implements ActionListener {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new MyNotePad();
+             note=new MyNotePad();
                 
             }
         });

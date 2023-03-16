@@ -4,16 +4,23 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
+import com.sun.tools.javac.util.JCDiagnostic.Note;
 
 public class PageSetup extends JFrame {
 
@@ -23,7 +30,58 @@ public class PageSetup extends JFrame {
 	JTextField bottomMargin = new JTextField("1");
 	JTextField toppMargin = new JTextField("1");
 	JComboBox pageType;
+	Preferences pageMargins;
 	public PageSetup() {
+		pageMargins= Preferences.userRoot().node(getClass().getName());
+		rightMargin.setText(pageMargins.get("lastinput", "1"));
+		leftMargin.setText(pageMargins.get("lastinput", "1"));
+		bottomMargin.setText(pageMargins.get("lastinput", "1"));
+		toppMargin.setText(pageMargins.get("lastinput", "1"));
+		
+		rightMargin.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String input = rightMargin.getText();
+		        pageMargins.put("lastinput", input);
+				
+			}
+			
+		});
+		leftMargin.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String input = leftMargin.getText();
+		        pageMargins.put("lastinput", input);
+				
+			}
+			
+		});
+		bottomMargin.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String input = bottomMargin.getText();
+		        pageMargins.put("lastinput", input);
+				
+			}
+			
+		});
+		toppMargin.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String input = toppMargin.getText();
+		        pageMargins.put("lastinput", input);
+				
+			}
+			
+		});
 		
 		//Paper pane
 		String [] page = {"Letter 12*10","A4 32*15"};
@@ -74,11 +132,31 @@ public class PageSetup extends JFrame {
 		marginPanel.add(bottomLabel);
 		marginPanel.add(bottomMargin);
 		
+		JButton applyButton = new JButton();
+		applyButton.setBounds(200,190, 100, 30);
+		applyButton.setText("Apply");
+		applyButton.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+		applyButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				MyNotePad.note.setEnabled(true);
+				
+				
+			
+			}
+			
+		});
+		applyButton.setBorderPainted(false);
+		
 		
 		setLayout(null);
 		add(paperPanel);
 		add(orientationPanel);
 		add(marginPanel);
+		add(applyButton);
 		setSize(360,260);
 		setResizable(false);
 		setVisible(true);
