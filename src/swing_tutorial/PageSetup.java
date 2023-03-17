@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -20,20 +19,19 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import com.sun.tools.javac.util.JCDiagnostic.Note;
-
 public class PageSetup extends JFrame {
 
 	
-	JTextField rightMargin = new JTextField("1");
-	JTextField leftMargin = new JTextField("1");
-	JTextField bottomMargin = new JTextField("1");
-	JTextField toppMargin = new JTextField("1");
+	JTextField rightMargin = new JTextField();
+	JTextField leftMargin = new JTextField();
+	JTextField bottomMargin = new JTextField();
+	JTextField toppMargin = new JTextField();
 	JComboBox pageType;
 	Preferences pageMargins;
 	public PageSetup() {
+		
 		pageMargins= Preferences.userRoot().node(getClass().getName());
-		rightMargin.setText(pageMargins.get("lastinput", "1"));
+		rightMargin.setText(pageMargins.get("rightMargin", "1"));
 		leftMargin.setText(pageMargins.get("lastinput", "1"));
 		bottomMargin.setText(pageMargins.get("lastinput", "1"));
 		toppMargin.setText(pageMargins.get("lastinput", "1"));
@@ -84,7 +82,7 @@ public class PageSetup extends JFrame {
 		});
 		
 		//Paper pane
-		String [] page = {"Letter 12*10","A4 32*15"};
+		String [] page = {"Letter 12*10","A4 32*15",""};
 		 pageType=new JComboBox(page);
 		 JLabel label = new JLabel("Page Size");
 		JPanel paperPanel = new JPanel();

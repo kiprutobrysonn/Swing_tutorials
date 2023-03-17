@@ -48,11 +48,11 @@ public class MyNotePad extends JFrame implements ActionListener {
     private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
     private Thread t1,t2;
     static MyNotePad note;
+    
 
 
     public MyNotePad() {
-    	
-    	
+    	//setUndecorated(false);
     	fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
         fileSelector.setFileSelectionMode(JFileChooser.FILES_ONLY);
  
@@ -287,13 +287,20 @@ public class MyNotePad extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				t1 = new Thread() {
+					public void run() {
 						PageSetup layout = new PageSetup();
 						layout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				note.setEnabled(false);
+				MyNotePad.note.setEnabled(false);
 				
 				Insets margin = new Insets(Integer.parseInt(layout.bottomMargin.getText()),Integer.parseInt(layout.toppMargin.getText()),Integer.parseInt(layout.leftMargin.getText()),Integer.parseInt(layout.rightMargin.getText()));
 				textArea.setMargin(margin);				
+				
+						
+					}
+				};
+				t1.start();
+												
 			}        	
         });
         toolsMenu.add(settingsOption);
@@ -326,7 +333,7 @@ public class MyNotePad extends JFrame implements ActionListener {
         statusBar.setOpaque(false);
         statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
         statusBar.add(wordCountButton);
-        statusBar.add(charCountButton);
+        statusBar.add(charCountButton);    
 
 
         setTitle("MyNotePad");
