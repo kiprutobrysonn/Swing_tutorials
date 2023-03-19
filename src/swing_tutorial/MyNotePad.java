@@ -1,10 +1,10 @@
 package swing_tutorial;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -31,7 +31,6 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.DocumentEvent;
@@ -39,169 +38,165 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MyNotePad extends JFrame implements ActionListener {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private JPanel statusBar = new JPanel();
-    private JTextArea textArea = new JTextArea(10, 50);
-    private JButton wordCountButton = new JButton("Words: 0");
-    private JButton charCountButton = new JButton("Characters: 0");
-    private File selectedFile;
-    private JFileChooser fileSelector = new JFileChooser();
-    private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
-    private Thread t1,t2;
-    static MyNotePad note;
-    
+	private JPanel statusBar = new JPanel();
+	private JTextArea textArea = new JTextArea(10, 50);
+	private JButton wordCountButton = new JButton("Words: 0");
+	private JButton charCountButton = new JButton("Characters: 0");
+	private File selectedFile;
+	private JFileChooser fileSelector = new JFileChooser();
+	private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
+	private Thread t1, t2;
+	static MyNotePad note;
 
+	public MyNotePad() {
 
-    public MyNotePad() {
-   
-    	//setUndecorated(false);com.sun.java.swing.plaf.windows.WindowsLookAndFeel
-    	fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
-        fileSelector.setFileSelectionMode(JFileChooser.FILES_ONLY);
- 
-        fileSelector.addChoosableFileFilter(new FileNameExtensionFilter("Text Documents", "txt"));
-        fileSelector.setAcceptAllFileFilterUsed(true);
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        
+		// setUndecorated(false);com.sun.java.swing.plaf.windows.WindowsLookAndFeel
 
-        wordCountButton.setEnabled(false);
-        wordCountButton.setBorder(BorderFactory.createEmptyBorder(1,1,0,0));
+		JScrollPane scrollPane = new JScrollPane(getTextArea());
 
-        charCountButton.setEnabled(false);
-        charCountButton.setBorder(BorderFactory.createEmptyBorder(1,1,0,0));
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        textArea.setAutoscrolls(true);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateWordAndCharCount();
+		wordCountButton.setEnabled(false);
+		wordCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
 
-            }
+		charCountButton.setEnabled(false);
+		charCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateWordAndCharCount();
+		getTextArea().setAutoscrolls(true);
+		getTextArea().setLineWrap(true);
+		getTextArea().setWrapStyleWord(true);
+		getTextArea().getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
 
-            }
+			}
 
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateWordAndCharCount();
-                            }
-        });
-        // A menu bar for the file menus and options
-        JMenuBar menu = new JMenuBar();
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
 
-        // File operations menu
-        JMenu fileMenu = new JMenu("File");
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-        JMenuItem newOption = new JMenuItem("New file");
-        newOption.addActionListener(this);
+			}
 
-        JMenuItem newWindowOption  = new JMenuItem("New Window");
-        
-        newWindowOption.addActionListener(new ActionListener() {
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
+			}
+		});
+		// A menu bar for the file menus and options
+		JMenuBar menu = new JMenuBar();
+
+		// File operations menu
+		JMenu fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		JMenuItem newOption = new JMenuItem("New file");
+		newOption.addActionListener(this);
+
+		JMenuItem newWindowOption = new JMenuItem("New Window");
+
+		newWindowOption.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				SwingUtilities.invokeLater(new Runnable() {
-		            @Override
-		            public void run() {
-		                new MyNotePad();
-		            }
-		        });
-				
-			}
-        
-        });
+					@Override
+					public void run() {
+						new MyNotePad();
+					}
+				});
 
-        JMenuItem openOption = new JMenuItem("Open ");
-        openOption.addKeyListener(null);
-   
-        openOption.addActionListener(new ActionListener() {
+			}
+
+		});
+		fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
+		fileSelector.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		fileSelector.addChoosableFileFilter(new FileNameExtensionFilter("Text Documents", "txt"));
+		fileSelector.setAcceptAllFileFilterUsed(true);
+
+		JMenuItem openOption = new JMenuItem("Open ");
+		openOption.addKeyListener(null);
+
+		openOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
-				int n =fileSelector.showOpenDialog(null);
-				if(n==JFileChooser.APPROVE_OPTION) {
-					
+
+				int n = fileSelector.showOpenDialog(null);
+				if (n == JFileChooser.APPROVE_OPTION) {
+
 					selectedFile = fileSelector.getSelectedFile();
-					
+
 					try {
 						BufferedReader b = new BufferedReader(new FileReader(selectedFile));
-						String s1="",s2="";                         
-					        while((s1=b.readLine())!=null){    
-					        	s2+=s1+"\n";    
-					        }    
-					        textArea.setText(s2);    
-					        b.close(); 
+						String s1 = "", s2 = "";
+						while ((s1 = b.readLine()) != null) {
+							s2 += s1 + "\n";
+						}
+						getTextArea().setText(s2);
+						b.close();
 					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(null,"Error file not found", "File not Found", JOptionPane.ERROR_MESSAGE);
-					}					
+						JOptionPane.showMessageDialog(null, "Error file not found", "File not Found",
+								JOptionPane.ERROR_MESSAGE);
+					}
 				}
-				
-			}        	
-        });
 
+			}
+		});
 
-        JMenuItem saveOption = new JMenuItem("Save");
-        saveOption.addActionListener(new ActionListener() {
+		JMenuItem saveOption = new JMenuItem("Save");
+		saveOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				 int n = fileSelector.showSaveDialog(null);
-	                if (n == JFileChooser.APPROVE_OPTION) {
-	                    File fileSave = new File(fileSelector.getSelectedFile().getAbsolutePath());
-	                    boolean result;
-	                    try {
-	                        result = fileSave.createNewFile(); // creates a new file
-	                        if (result) // test if successfully created a new file
-	                        {
-	                            JOptionPane.showMessageDialog(null, "File Save Successfully", "Saved",
-	                                    JOptionPane.INFORMATION_MESSAGE);// returns the path string
-	                            PrintWriter writerToSaved = new PrintWriter(fileSave);
-	                            writerToSaved.write(textArea.getText());
-	                            writerToSaved.close();
-	                        } else {
-	                            JOptionPane.showMessageDialog(null, "File Already Exists");
-	                           
-	                        }
-	                    } catch (IOException e2) {
-	                        e2.printStackTrace();
-	                    }
-	                }
-				
+				int n = fileSelector.showSaveDialog(null);
+				if (n == JFileChooser.APPROVE_OPTION) {
+					File fileSave = new File(fileSelector.getSelectedFile().getAbsolutePath());
+					boolean result;
+					try {
+						result = fileSave.createNewFile(); // creates a new file
+						if (result) // test if successfully created a new file
+						{
+							JOptionPane.showMessageDialog(null, "File Save Successfully", "Saved",
+									JOptionPane.INFORMATION_MESSAGE);// returns the path string
+							PrintWriter writerToSaved = new PrintWriter(fileSave);
+							writerToSaved.write(getTextArea().getText());
+							writerToSaved.close();
+						} else {
+							JOptionPane.showMessageDialog(null, "File Already Exists");
+
+						}
+					} catch (IOException e2) {
+						e2.printStackTrace();
+					}
+				}
+
 			}
-        	
-        });
 
+		});
 
-        JMenuItem saveAsOption  = new JMenuItem("Save as ...");
-        saveAsOption.addActionListener(new ActionListener() {
+		JMenuItem saveAsOption = new JMenuItem("Save as ...");
+		saveAsOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				       
-				        int userSelection = fileSelector.showSaveDialog(null);
-				        if (userSelection == JFileChooser.APPROVE_OPTION) {
-				            File fileToSave = fileSelector.getSelectedFile();				
-			}
-			}
-        	
-        });
 
+				int userSelection = fileSelector.showSaveDialog(null);
+				if (userSelection == JFileChooser.APPROVE_OPTION) {
+					File fileToSave = fileSelector.getSelectedFile();
+				}
+			}
 
-        JMenuItem exitOption = new JMenuItem("Exit");
-        exitOption.addActionListener(new ActionListener() {
+		});
+
+		JMenuItem exitOption = new JMenuItem("Exit");
+		exitOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -210,186 +205,190 @@ public class MyNotePad extends JFrame implements ActionListener {
 
 			}
 
-        });
-        // Editing operations
-        JMenu editMenu = new JMenu("Edit");
-        editMenu.setMnemonic(KeyEvent.VK_E);
-        JMenuItem copyOption = new JMenuItem("Copy");
-        copyOption.addActionListener(new ActionListener() {
+		});
+		// Editing operations
+		JMenu editMenu = new JMenu("Edit");
+		editMenu.setMnemonic(KeyEvent.VK_E);
+		JMenuItem copyOption = new JMenuItem("Copy");
+		copyOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				textArea.copy();
+				getTextArea().copy();
 			}
 
-        });
-       // copyOption.setMnemonic(KeyEvent.VK_CUT);
-        editMenu.add(copyOption);
+		});
+		// copyOption.setMnemonic(KeyEvent.VK_CUT);
+		editMenu.add(copyOption);
 
-        JMenuItem pasteOption = new JMenuItem("Paste");
-        pasteOption.addActionListener(new ActionListener() {
+		JMenuItem pasteOption = new JMenuItem("Paste");
+		pasteOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				textArea.paste();
+				getTextArea().paste();
 			}
-        });
-        editMenu.add(pasteOption);
+		});
+		editMenu.add(pasteOption);
 
-        JMenuItem cutOption = new JMenuItem("Cut");
-        cutOption.addActionListener(new ActionListener() {
+		JMenuItem cutOption = new JMenuItem("Cut");
+		cutOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				textArea.cut();
+				getTextArea().cut();
 			}
-        });
-        editMenu.add(cutOption);
+		});
+		editMenu.add(cutOption);
 
-        JMenuItem selectAllOption = new JMenuItem("Select All");
-        selectAllOption.addActionListener(new ActionListener() {
+		JMenuItem selectAllOption = new JMenuItem("Select All");
+		selectAllOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				textArea.selectAll();
+				getTextArea().selectAll();
 			}
-        });
-        editMenu.add(selectAllOption);
+		});
+		editMenu.add(selectAllOption);
 
-        JMenuItem deleteOption = new JMenuItem("Delete");
-        deleteOption.setIcon(deleteIcon);
-        deleteOption.addActionListener(new ActionListener() {
+		JMenuItem deleteOption = new JMenuItem("Delete");
+		deleteOption.setIcon(deleteIcon);
+		deleteOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				textArea.setText(null);
+				getTextArea().setText(null);
 			}
-        	
-        });
-        editMenu.add(deleteOption);
 
-        //Tools available
-        JMenu toolsMenu = new JMenu("Tools");
-        toolsMenu.setMnemonic(KeyEvent.VK_T);
-        JMenuItem statusBarView = new JMenuItem("View Status Bar");
-        statusBarView.addActionListener(new ActionListener() {
+		});
+		editMenu.add(deleteOption);
+
+		// Tools available
+		JMenu toolsMenu = new JMenu("Tools");
+		toolsMenu.setMnemonic(KeyEvent.VK_T);
+		JMenuItem statusBarView = new JMenuItem("View Status Bar");
+		statusBarView.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if(statusBar.isVisible()) {
-				statusBar.setVisible(false);
-				}else {
-					statusBar.setVisible(true); 
+				if (statusBar.isVisible()) {
+					statusBar.setVisible(false);
+				} else {
+					statusBar.setVisible(true);
 				}
 			}
-        	
-        });
-        toolsMenu.add(statusBarView);
 
-        JMenuItem settingsOption= new JMenuItem("Settings");
-        settingsOption.addActionListener(new ActionListener() {
+		});
+		toolsMenu.add(statusBarView);
+
+		JMenuItem settingsOption = new JMenuItem("Settings");
+		settingsOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub				
-						PageSetup layout = new PageSetup();
-						layout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				// TODO Auto-generated method stub
 				MyNotePad.note.setEnabled(false);
-				
-				Insets margin = new Insets(Integer.parseInt(layout.bottomMargin.getText()),Integer.parseInt(layout.toppMargin.getText()),Integer.parseInt(layout.leftMargin.getText()),Integer.parseInt(layout.rightMargin.getText()));
-				textArea.setMargin(margin);			
-				
-												
-			}        	
-        });
-        toolsMenu.add(settingsOption);
-        // Help menu
-        JMenu helpMenu = new JMenu("Help");
-        helpMenu.setMnemonic(KeyEvent.VK_H);// Sets the key shortcut to Alt+H
-        JMenuItem viewHelp = new JMenuItem("View Help");
-        viewHelp.addActionListener(this);
-        helpMenu.add(viewHelp);
+				PageSetup layout = new PageSetup();
 
-        JMenuItem aboutOption = new JMenuItem("About ?");
-        aboutOption.addActionListener(this);
-        helpMenu.add(aboutOption);
+				layout.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        menu.add(fileMenu);
-        fileMenu.add(newOption);
-        fileMenu.add(newWindowOption);
-        fileMenu.add(openOption);
-        fileMenu.add(saveOption);
-        fileMenu.add(saveAsOption);
-        fileMenu.add(exitOption);
+			}
+		});
+		toolsMenu.add(settingsOption);
+		// Help menu
+		JMenu helpMenu = new JMenu("Help");
+		helpMenu.setMnemonic(KeyEvent.VK_H);// Sets the key shortcut to Alt+H
+		JMenuItem viewHelp = new JMenuItem("View Help");
+		viewHelp.addActionListener(this);
+		helpMenu.add(viewHelp);
 
-        menu.add(editMenu);
-        menu.add(toolsMenu);
-        menu.add(helpMenu);
+		JMenuItem aboutOption = new JMenuItem("About ?");
+		aboutOption.addActionListener(this);
+		helpMenu.add(aboutOption);
 
-        statusBar.setPreferredSize(new Dimension(100, 30));
-        statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-        statusBar.setBackground(Color.gray);
-        statusBar.setOpaque(false);
-        statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        statusBar.add(wordCountButton);
-        statusBar.add(charCountButton);    
+		menu.add(fileMenu);
+		fileMenu.add(newOption);
+		fileMenu.add(newWindowOption);
+		fileMenu.add(openOption);
+		fileMenu.add(saveOption);
+		fileMenu.add(saveAsOption);
+		fileMenu.add(exitOption);
 
+		menu.add(editMenu);
+		menu.add(toolsMenu);
+		menu.add(helpMenu);
 
-        setTitle("MyNotePad");
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(true);
-        setLayout(new BorderLayout());
-        add(scrollPane);
-        add(statusBar, BorderLayout.SOUTH);
-        setJMenuBar(menu);
-        Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
-        setIconImage(icon);
-        setSize(500, 500);
-        setLocationRelativeTo(null);
-        setVisible(true);
+		statusBar.setPreferredSize(new Dimension(100, 30));
+		statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		statusBar.setBackground(Color.gray);
+		statusBar.setOpaque(false);
+		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		statusBar.add(wordCountButton);
+		statusBar.add(charCountButton);
 
-    }
+		setTitle("MyNotePad");
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setResizable(true);
+		setLayout(new BorderLayout());
+		add(scrollPane);
+		add(statusBar, BorderLayout.SOUTH);
+		setJMenuBar(menu);
+		Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
+		setIconImage(icon);
+		setSize(500, 500);
+		setLocationRelativeTo(null);
+		setVisible(true);
 
-    private void updateWordAndCharCount() {
-        String textWritten = textArea.getText();
-        if (textWritten == null || textWritten.isEmpty()) {
-            wordCountButton.setText("Words: 0");
-            charCountButton.setText("Characters: 0");
-        } else {
-            StringTokenizer tokens = new StringTokenizer(textWritten);
-            int wordCount = tokens.countTokens();
-            int charCount = textWritten.length();
-            wordCountButton.setText("Words: " + wordCount);
-            charCountButton.setText("Characters: " + charCount);
-        }
-    }
+	}
 
-    public static void main(String[] args) {
-    	try {
-            // Set the look and feel to the system's most recent available
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-    	
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-             note=new MyNotePad();
-                
-            }
-        });
-    }
+	private void updateWordAndCharCount() {
+		String textWritten = getTextArea().getText();
+		if (textWritten == null || textWritten.isEmpty()) {
+			wordCountButton.setText("Words: 0");
+			charCountButton.setText("Characters: 0");
+		} else {
+			StringTokenizer tokens = new StringTokenizer(textWritten);
+			int wordCount = tokens.countTokens();
+			int charCount = textWritten.length();
+			wordCountButton.setText("Words: " + wordCount);
+			charCountButton.setText("Characters: " + charCount);
+		}
+	}
+
+	public JTextArea getTextArea() {
+		return textArea;
+	}
+
+	public void setTextArea(JTextArea textArea) {
+		this.textArea = textArea;
+	}
+
+	public static void main(String[] args) {
+		try {
+			// Set the look and feel to the system's most recent available
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				note = new MyNotePad();
+
+			}
+		});
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
 
 	}
 }
