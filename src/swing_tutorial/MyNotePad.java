@@ -30,6 +30,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.DocumentEvent;
@@ -52,7 +54,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 
 
     public MyNotePad() {
-    	//setUndecorated(false);
+   
+    	//setUndecorated(false);com.sun.java.swing.plaf.windows.WindowsLookAndFeel
     	fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
         fileSelector.setFileSelectionMode(JFileChooser.FILES_ONLY);
  
@@ -259,7 +262,15 @@ public class MyNotePad extends JFrame implements ActionListener {
 
         JMenuItem deleteOption = new JMenuItem("Delete");
         deleteOption.setIcon(deleteIcon);
-        deleteOption.addActionListener(this);
+        deleteOption.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				textArea.setText(null);
+			}
+        	
+        });
         editMenu.add(deleteOption);
 
         //Tools available
@@ -286,20 +297,14 @@ public class MyNotePad extends JFrame implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				t1 = new Thread() {
-					public void run() {
+				// TODO Auto-generated method stub				
 						PageSetup layout = new PageSetup();
 						layout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				MyNotePad.note.setEnabled(false);
 				
 				Insets margin = new Insets(Integer.parseInt(layout.bottomMargin.getText()),Integer.parseInt(layout.toppMargin.getText()),Integer.parseInt(layout.leftMargin.getText()),Integer.parseInt(layout.rightMargin.getText()));
-				textArea.setMargin(margin);				
+				textArea.setMargin(margin);			
 				
-						
-					}
-				};
-				t1.start();
 												
 			}        	
         });
@@ -366,6 +371,13 @@ public class MyNotePad extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
+    	try {
+            // Set the look and feel to the system's most recent available
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+    	
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
