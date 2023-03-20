@@ -45,7 +45,17 @@ public class PageSetup extends JFrame {
 		toppMargin.addActionListener(e -> pageMargins.put("toppMargin", toppMargin.getText()));
 
 		// Paper pane
-		String[] page = { "Letter 12*10", "A4 32*15", "" };
+		String[] page = { "Letter 12*10","A0: 841 x 1189 mm (33.1 x 46.8 in)",
+				"A1: 594 x 841 mm (23.4 x 33.1 in)", "A2: 420 x 594 mm (16.5 x 23.4 in)\n",
+				"A3: 297 x 420 mm (11.7 x 16.5 in)\n", "A4: 210 x 297 mm (8.3 x 11.7 in)",
+				"A5: 148 x 210 mm (5.8 x 8.3 in)", "A6: 105 x 148 mm (4.1 x 5.8 in)", "A7: 74 x 105 mm (2.9 x 4.1 in)",
+				"B0: 1000 x 1414 mm (39.4 x 55.7 in)", "B1: 707 x 1000 mm (27.8 x 39.4 in)",
+				"B2: 500 x 707 mm (19.7 x 27.8 in)", "B3: 353 x 500 mm (13.9 x 19.7 in)",
+				"B4: 250 x 353 mm (9.8 x 13.9 in)", "B5: 176 x 250 mm (6.9 x 9.8 in)",
+				"B6: 125 x 176 mm (4.9 x 6.9 in)", "C0: 917 x 1297 mm (36.1 x 51.1 in)",
+				"C1: 648 x 917 mm (25.5 x 36.1 in)", "C2: 458 x 648 mm (18.0 x 25.5 in)",
+				"C3: 324 x 458 mm (12.8 x 18.0 in)", "C4: 229 x 324 mm (9.0 x 12.8 in)",
+				"C5: 162 x 229 mm (6.4 x 9.0 in)", "C6: 114 x 162 mm (4.5 x 6.4 in" };
 		pageType = new JComboBox(page);
 		JLabel label = new JLabel("Page Size");
 		JPanel paperPanel = new JPanel();
