@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,13 +48,12 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private JTextArea textArea = new JTextArea(10, 50);
 	private JButton wordCountButton = new JButton("Words: 0");
 	private JButton charCountButton = new JButton("Characters: 0");
-	private File selectedFile;
+	private File selectedFile, fileSave;
 	private JFileChooser fileSelector = new JFileChooser();
 	private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
 	static MyNotePad note;
 
 	public MyNotePad() {
-
 
 		JScrollPane scrollPane = new JScrollPane(getTextArea());
 
@@ -140,6 +140,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 						}
 						getTextArea().setText(s2);
 						b.close();
+						fileSave=selectedFile;
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(null, "Error file not found", "File not Found",
 								JOptionPane.ERROR_MESSAGE);
@@ -151,6 +152,18 @@ public class MyNotePad extends JFrame implements ActionListener {
 
 		JMenuItem saveOption = new JMenuItem("Save");
 		saveOption.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				saveFile();
+
+			}
+
+		});
+
+		JMenuItem saveAsOption = new JMenuItem("Save as ...");
+		saveAsOption.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -177,21 +190,6 @@ public class MyNotePad extends JFrame implements ActionListener {
 					}
 				}
 
-			}
-
-		});
-
-		JMenuItem saveAsOption = new JMenuItem("Save as ...");
-		saveAsOption.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-				int userSelection = fileSelector.showSaveDialog(null);
-				if (userSelection == JFileChooser.APPROVE_OPTION) {
-					File fileToSave = fileSelector.getSelectedFile();
-				}
 			}
 
 		});
@@ -332,10 +330,9 @@ public class MyNotePad extends JFrame implements ActionListener {
 		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		statusBar.add(wordCountButton);
 		statusBar.add(charCountButton);
-		
-		
+
 		setTitle("MyNotePad");
-		//setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setResizable(true);
 		setLayout(new BorderLayout());
 		add(scrollPane);
@@ -346,21 +343,60 @@ public class MyNotePad extends JFrame implements ActionListener {
 		setSize(500, 500);
 		setLocationRelativeTo(null);
 		addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-            	if(textArea.getText()==null||textArea.getText()=="") {
-            		System.exit(0);
-            	}else {
-            		int option = JOptionPane.showConfirmDialog(null, "Do you want to exit", "Exit", JOptionPane.YES_NO_CANCEL_OPTION);
-                    if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION) {
-                        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                    } else {
-                        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    }	
-            	}
-                
-            }
-        });
+			public void windowClosing(WindowEvent e) {
+				if (textArea.getText() == null || textArea.getText() == "") {
+					System.exit(0);
+				} else {
+					int option = JOptionPane.showConfirmDialog(null, "Do you want to exit", "Exit",
+							JOptionPane.YES_NO_CANCEL_OPTION);
+					if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION) {
+						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					} else {
+						setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					}
+				}
+
+			}
+		});
 		setVisible(true);
+
+	}
+
+	private void saveFile() {
+		if (selectedFile == null) {
+			int n = fileSelector.showSaveDialog(null);
+			if (n == JFileChooser.APPROVE_OPTION) {
+				fileSave = new File(fileSelector.getSelectedFile().getAbsolutePath());
+				boolean result;
+				try {
+					result = fileSave.createNewFile(); // creates a new file
+					if (result) // test if successfully created a new file
+					{
+						JOptionPane.showMessageDialog(null, "File Save Successfully", "Saved",
+								JOptionPane.INFORMATION_MESSAGE);// returns the path string
+						PrintWriter writerToSaved = new PrintWriter(fileSave);
+						writerToSaved.write(getTextArea().getText());
+						writerToSaved.close();
+						selectedFile=fileSave;
+					} else {
+						JOptionPane.showMessageDialog(null, "File Already Exists");
+					}
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+			}
+		} else {
+			PrintWriter writerToSaved;
+			try {
+				writerToSaved = new PrintWriter(fileSave);
+				writerToSaved.write(getTextArea().getText());
+				writerToSaved.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 
 	}
 
