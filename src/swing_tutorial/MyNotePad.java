@@ -2,12 +2,15 @@ package swing_tutorial;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,12 +50,10 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private File selectedFile;
 	private JFileChooser fileSelector = new JFileChooser();
 	private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
-	private Thread t1, t2;
 	static MyNotePad note;
 
 	public MyNotePad() {
 
-		// setUndecorated(false);com.sun.java.swing.plaf.windows.WindowsLookAndFeel
 
 		JScrollPane scrollPane = new JScrollPane(getTextArea());
 
@@ -331,9 +332,10 @@ public class MyNotePad extends JFrame implements ActionListener {
 		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		statusBar.add(wordCountButton);
 		statusBar.add(charCountButton);
-
+		
+		
 		setTitle("MyNotePad");
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		//setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setResizable(true);
 		setLayout(new BorderLayout());
 		add(scrollPane);
@@ -343,6 +345,21 @@ public class MyNotePad extends JFrame implements ActionListener {
 		setIconImage(icon);
 		setSize(500, 500);
 		setLocationRelativeTo(null);
+		addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+            	if(textArea.getText()==null||textArea.getText()=="") {
+            		System.exit(0);
+            	}else {
+            		int option = JOptionPane.showConfirmDialog(null, "Do you want to exit", "Exit", JOptionPane.YES_NO_CANCEL_OPTION);
+                    if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION) {
+                        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    } else {
+                        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }	
+            	}
+                
+            }
+        });
 		setVisible(true);
 
 	}
