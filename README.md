@@ -1,1 +1,1 @@
-#SWing tutorials 
+A simple text editor
