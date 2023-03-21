@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -50,12 +52,11 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private JButton charCountButton = new JButton("Characters: 0");
 	private File selectedFile, fileSave;
 	private JFileChooser fileSelector = new JFileChooser();
-	private ImageIcon deleteIcon = new ImageIcon("//swing_tutorial//src//icon-delete-15.jpg");
 	static MyNotePad note;
 
 	public MyNotePad() {
 		setTitle("Untitled");
-	
+
 		JScrollPane scrollPane = new JScrollPane(getTextArea());
 
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -98,21 +99,20 @@ public class MyNotePad extends JFrame implements ActionListener {
 		newOption.addActionListener(this);
 
 		JMenuItem newWindowOption = new JMenuItem("New Window");
+		newWindowOption.setAccelerator(KeyStroke.getKeyStroke("control N"));
+		AbstractAction newWindow = new AbstractAction() {
 
-		newWindowOption.addActionListener(new ActionListener() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						new MyNotePad();
-					}
-				});
 
+				new MyNotePad().setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			}
 
-		});
+		};
+		newWindowOption.addActionListener(newWindow);
 		fileSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
 		fileSelector.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -120,49 +120,32 @@ public class MyNotePad extends JFrame implements ActionListener {
 		fileSelector.setAcceptAllFileFilterUsed(true);
 
 		JMenuItem openOption = new JMenuItem("Open ");
-		openOption.addKeyListener(null);
+		openOption.setAccelerator(KeyStroke.getKeyStroke("control O"));
+		AbstractAction openAction = new AbstractAction() {
 
-		openOption.addActionListener(new ActionListener() {
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
-				int n = fileSelector.showOpenDialog(null);
-				if (n == JFileChooser.APPROVE_OPTION) {
-
-					selectedFile = fileSelector.getSelectedFile();
-
-					try {
-						BufferedReader b = new BufferedReader(new FileReader(selectedFile));
-						String s1 = "", s2 = "";
-						while ((s1 = b.readLine()) != null) {
-							s2 += s1 + "\n";
-						}
-						getTextArea().setText(s2);
-						b.close();
-						setTitle(selectedFile.getName());
-						fileSave=selectedFile;
-					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(null, "Error file not found", "File not Found",
-								JOptionPane.ERROR_MESSAGE);
-					}
-				}
-
+				openFile();
 			}
-		});
+		};
+		openOption.addActionListener(openAction);
 
 		JMenuItem saveOption = new JMenuItem("Save");
-		saveOption.addActionListener(new ActionListener() {
+		saveOption.setAccelerator(KeyStroke.getKeyStroke("control S"));
+		AbstractAction saveAction = new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				saveFile();
-
 			}
-
-		});
+		};
+		saveOption.addActionListener(saveAction);
 
 		JMenuItem saveAsOption = new JMenuItem("Save as ...");
 		saveAsOption.addActionListener(new ActionListener() {
@@ -184,7 +167,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 							writerToSaved.write(getTextArea().getText());
 							writerToSaved.close();
 							setTitle(fileSave.getName());
-							selectedFile=fileSave;
+							selectedFile = fileSave;
 						} else {
 							JOptionPane.showMessageDialog(null, "File Already Exists");
 
@@ -259,7 +242,6 @@ public class MyNotePad extends JFrame implements ActionListener {
 		editMenu.add(selectAllOption);
 
 		JMenuItem deleteOption = new JMenuItem("Delete");
-		deleteOption.setIcon(deleteIcon);
 		deleteOption.addActionListener(new ActionListener() {
 
 			@Override
@@ -314,8 +296,6 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenuItem aboutOption = new JMenuItem("About ?");
 		aboutOption.addActionListener(this);
 		helpMenu.add(aboutOption);
-		
-	
 
 		menu.add(fileMenu);
 		fileMenu.add(newOption);
@@ -336,7 +316,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		statusBar.add(wordCountButton);
 		statusBar.add(charCountButton);
-		
+
 		// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setResizable(true);
 		setLayout(new BorderLayout());
@@ -357,7 +337,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 					if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION) {
 						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 					} else {
-						setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					}
 				}
 
@@ -382,7 +362,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 						PrintWriter writerToSaved = new PrintWriter(fileSave);
 						writerToSaved.write(getTextArea().getText());
 						writerToSaved.close();
-						selectedFile=fileSave;
+						selectedFile = fileSave;
 						setTitle(fileSave.getName());
 					} else {
 						JOptionPane.showMessageDialog(null, "File Already Exists");
@@ -402,6 +382,30 @@ public class MyNotePad extends JFrame implements ActionListener {
 				e.printStackTrace();
 			}
 
+		}
+
+	}
+
+	private void openFile() {
+		int n = fileSelector.showOpenDialog(null);
+		if (n == JFileChooser.APPROVE_OPTION) {
+
+			selectedFile = fileSelector.getSelectedFile();
+
+			try {
+				BufferedReader b = new BufferedReader(new FileReader(selectedFile));
+				String s1 = "", s2 = "";
+				while ((s1 = b.readLine()) != null) {
+					s2 += s1 + "\n";
+				}
+				getTextArea().setText(s2);
+				b.close();
+				setTitle(selectedFile.getName());
+				fileSave = selectedFile;
+			} catch (IOException e1) {
+				JOptionPane.showMessageDialog(null, "Error file not found", "File not Found",
+						JOptionPane.ERROR_MESSAGE);
+			}
 		}
 
 	}
