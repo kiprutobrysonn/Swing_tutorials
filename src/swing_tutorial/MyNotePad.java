@@ -54,7 +54,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 	static MyNotePad note;
 
 	public MyNotePad() {
-
+		setTitle("Untitled");
+	
 		JScrollPane scrollPane = new JScrollPane(getTextArea());
 
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -140,6 +141,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 						}
 						getTextArea().setText(s2);
 						b.close();
+						setTitle(selectedFile.getName());
 						fileSave=selectedFile;
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(null, "Error file not found", "File not Found",
@@ -181,6 +183,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 							PrintWriter writerToSaved = new PrintWriter(fileSave);
 							writerToSaved.write(getTextArea().getText());
 							writerToSaved.close();
+							setTitle(fileSave.getName());
+							selectedFile=fileSave;
 						} else {
 							JOptionPane.showMessageDialog(null, "File Already Exists");
 
@@ -310,6 +314,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenuItem aboutOption = new JMenuItem("About ?");
 		aboutOption.addActionListener(this);
 		helpMenu.add(aboutOption);
+		
+	
 
 		menu.add(fileMenu);
 		fileMenu.add(newOption);
@@ -330,8 +336,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		statusBar.add(wordCountButton);
 		statusBar.add(charCountButton);
-
-		setTitle("MyNotePad");
+		
 		// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setResizable(true);
 		setLayout(new BorderLayout());
@@ -378,6 +383,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 						writerToSaved.write(getTextArea().getText());
 						writerToSaved.close();
 						selectedFile=fileSave;
+						setTitle(fileSave.getName());
 					} else {
 						JOptionPane.showMessageDialog(null, "File Already Exists");
 					}
