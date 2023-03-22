@@ -196,49 +196,59 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic(KeyEvent.VK_E);
 		JMenuItem copyOption = new JMenuItem("Copy");
-		copyOption.addActionListener(new ActionListener() {
-
+		copyOption.setAccelerator(KeyStroke.getKeyStroke("control C"));
+		AbstractAction copyAction = new AbstractAction() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				getTextArea().copy();
+				
 			}
-
-		});
+		};
+		copyOption.addActionListener(copyAction);
+		
 		// copyOption.setMnemonic(KeyEvent.VK_CUT);
 		editMenu.add(copyOption);
 
 		JMenuItem pasteOption = new JMenuItem("Paste");
-		pasteOption.addActionListener(new ActionListener() {
-
+		pasteOption.setAccelerator(KeyStroke.getKeyStroke("control V"));
+		AbstractAction pasteAction = new AbstractAction() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				getTextArea().paste();
 			}
-		});
+		};
+		pasteOption.addActionListener(pasteAction);
 		editMenu.add(pasteOption);
 
 		JMenuItem cutOption = new JMenuItem("Cut");
-		cutOption.addActionListener(new ActionListener() {
-
+		cutOption.setAccelerator(KeyStroke.getKeyStroke("control X"));
+		AbstractAction cutAction = new AbstractAction() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				getTextArea().cut();
 			}
-		});
+		};
+		cutOption.addActionListener(cutAction);
 		editMenu.add(cutOption);
 
 		JMenuItem selectAllOption = new JMenuItem("Select All");
-		selectAllOption.addActionListener(new ActionListener() {
-
+		selectAllOption.setAccelerator(KeyStroke.getKeyStroke("control A"));
+		AbstractAction selectAction = new AbstractAction() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				getTextArea().selectAll();
+				
 			}
-		});
+		};
+		selectAllOption.addActionListener(selectAction);
 		editMenu.add(selectAllOption);
 
 		JMenuItem deleteOption = new JMenuItem("Delete");
