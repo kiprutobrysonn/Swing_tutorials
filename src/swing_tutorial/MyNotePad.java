@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -33,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
@@ -53,6 +55,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private File selectedFile, fileSave;
 	private JFileChooser fileSelector = new JFileChooser();
 	static MyNotePad note;
+	private int lastIndex = -1;
 
 	public MyNotePad() {
 		setTitle("Untitled");
@@ -296,6 +299,65 @@ public class MyNotePad extends JFrame implements ActionListener {
 			}
 		});
 		toolsMenu.add(settingsOption);
+		//Find menu Item
+		JMenuItem findOption = new JMenuItem("Find");
+		toolsMenu.add(findOption);
+		findOption.setAccelerator(KeyStroke.getKeyStroke("control F"));
+		AbstractAction findAction = new AbstractAction() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				new Thread() {
+					public void run() {
+						
+					}
+				}.start();
+				JFrame find = new JFrame("Find");
+				find.setSize(300,150);
+				find.setResizable(false);
+				find.setLayout(null);
+				
+				JTextField searchField = new JTextField();
+				searchField.setBounds(110,20,80,30);
+				JLabel label = new JLabel("Find:");
+				label.setBounds(20,20,80,30);
+				JButton findButton = new JButton("Find");
+				findButton.setBounds(210,80,80,30);
+				findButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						 String searchText = searchField.getText();
+			                String text = textArea.getText();
+			                lastIndex = text.indexOf(searchText);
+			                if (lastIndex != -1) {
+			                    textArea.requestFocusInWindow();
+			                    textArea.setCaretPosition(lastIndex);
+			                    textArea.moveCaretPosition(lastIndex + searchText.length());
+			                } else {
+			                    JOptionPane.showMessageDialog(null,
+			                            "Text not found", "Search",
+			                            JOptionPane.INFORMATION_MESSAGE);
+			                }
+			            }
+						
+					
+					
+				});
+				JButton findNext = new JButton ("Find next");
+				findNext.setBounds(120,80,90,30);
+				
+				find.add(searchField);
+				find.add(label);
+				find.add(findButton);
+				find.add(findNext);
+				find.setVisible(true);
+				
+			}
+		};
+		findOption.addActionListener(findAction);
 		// Help menu
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);// Sets the key shortcut to Alt+H
