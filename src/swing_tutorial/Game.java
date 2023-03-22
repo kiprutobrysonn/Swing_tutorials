@@ -1,24 +1,33 @@
 package swing_tutorial;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class Game extends JFrame implements KeyListener{
 	JLabel box = new JLabel();
+	ImageIcon icon ;
 	public Game() {
 		
-		box.setBounds(0,0,30,30);
-		box.setBackground(Color.white);
-		box.setOpaque(true);		
-		
-		
+		box.setBounds(0,0,50,50);
+		box.setBackground(Color.black);
+
+				
+		icon = new ImageIcon("C:\\Users\\user\\Desktop\\rocket.jpg");
+		Image img = icon.getImage();
+		Image newImg = img.getScaledInstance(box.getWidth(), box.getHeight(), Image.SCALE_SMOOTH); // Scale the Image to fit the label
+		ImageIcon newIcon = new ImageIcon(newImg); // Create a new ImageIcon with the scaled Image
+		box.setIcon(newIcon);
+
 		add(box);
 		this.addKeyListener(this);
-		getContentPane().setBackground(Color.CYAN);
+		getContentPane().setBackground(Color.BLACK);
 		setSize(400,600);
 		setLayout(null);
 		setResizable(false);
