@@ -17,7 +17,6 @@ public class Game extends JFrame implements KeyListener{
 		
 		box.setBounds(0,0,50,50);
 		box.setBackground(Color.black);
-
 				
 		icon = new ImageIcon("C:\\Users\\user\\Desktop\\rocket.jpg");
 		Image img = icon.getImage();

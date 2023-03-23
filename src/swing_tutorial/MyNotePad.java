@@ -201,23 +201,23 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenuItem copyOption = new JMenuItem("Copy");
 		copyOption.setAccelerator(KeyStroke.getKeyStroke("control C"));
 		AbstractAction copyAction = new AbstractAction() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				getTextArea().copy();
-				
+
 			}
 		};
 		copyOption.addActionListener(copyAction);
-		
+
 		// copyOption.setMnemonic(KeyEvent.VK_CUT);
 		editMenu.add(copyOption);
 
 		JMenuItem pasteOption = new JMenuItem("Paste");
 		pasteOption.setAccelerator(KeyStroke.getKeyStroke("control V"));
 		AbstractAction pasteAction = new AbstractAction() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -230,7 +230,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenuItem cutOption = new JMenuItem("Cut");
 		cutOption.setAccelerator(KeyStroke.getKeyStroke("control X"));
 		AbstractAction cutAction = new AbstractAction() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -243,12 +243,12 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenuItem selectAllOption = new JMenuItem("Select All");
 		selectAllOption.setAccelerator(KeyStroke.getKeyStroke("control A"));
 		AbstractAction selectAction = new AbstractAction() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				getTextArea().selectAll();
-				
+
 			}
 		};
 		selectAllOption.addActionListener(selectAction);
@@ -299,62 +299,62 @@ public class MyNotePad extends JFrame implements ActionListener {
 			}
 		});
 		toolsMenu.add(settingsOption);
-		//Find menu Item
+		// Find menu Item
 		JMenuItem findOption = new JMenuItem("Find");
 		toolsMenu.add(findOption);
 		findOption.setAccelerator(KeyStroke.getKeyStroke("control F"));
 		AbstractAction findAction = new AbstractAction() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				new Thread() {
 					public void run() {
-						
+
 					}
 				}.start();
 				JFrame find = new JFrame("Find");
-				find.setSize(300,150);
+				find.setSize(300, 150);
 				find.setResizable(false);
 				find.setLayout(null);
-				
+				find.setLocationRelativeTo(note);
+				Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
+				find.setIconImage(icon);
+
 				JTextField searchField = new JTextField();
-				searchField.setBounds(110,20,80,30);
+				searchField.setBounds(110, 20, 80, 30);
 				JLabel label = new JLabel("Find:");
-				label.setBounds(20,20,80,30);
+				label.setBounds(20, 20, 80, 30);
 				JButton findButton = new JButton("Find");
-				findButton.setBounds(210,80,80,30);
+				findButton.setBounds(210, 80, 80, 30);
 				findButton.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
-						 String searchText = searchField.getText();
-			                String text = textArea.getText();
-			                lastIndex = text.indexOf(searchText);
-			                if (lastIndex != -1) {
-			                    textArea.requestFocusInWindow();
-			                    textArea.setCaretPosition(lastIndex);
-			                    textArea.moveCaretPosition(lastIndex + searchText.length());
-			                } else {
-			                    JOptionPane.showMessageDialog(null,
-			                            "Text not found", "Search",
-			                            JOptionPane.INFORMATION_MESSAGE);
-			                }
-			            }
-						
-					
-					
+						String searchText = searchField.getText();
+						String text = textArea.getText();
+						lastIndex = text.indexOf(searchText);
+						if (lastIndex != -1) {
+							textArea.requestFocusInWindow();
+							textArea.setCaretPosition(lastIndex);
+							textArea.moveCaretPosition(lastIndex + searchText.length());
+						} else {
+							JOptionPane.showMessageDialog(null, "Text not found", "Search",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+
 				});
-				JButton findNext = new JButton ("Find next");
-				findNext.setBounds(120,80,90,30);
-				
+				JButton findNext = new JButton("Find next");
+				findNext.setBounds(120, 80, 90, 30);
+
 				find.add(searchField);
 				find.add(label);
 				find.add(findButton);
 				find.add(findNext);
 				find.setVisible(true);
-				
+
 			}
 		};
 		findOption.addActionListener(findAction);
@@ -401,17 +401,44 @@ public class MyNotePad extends JFrame implements ActionListener {
 		setLocationRelativeTo(null);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				if (textArea.getText() == null || textArea.getText() == "") {
-					System.exit(0);
-				} else {
-					int option = JOptionPane.showConfirmDialog(null, "Do you want to exit", "Exit",
+				
+				if(fileSave==null & selectedFile==null & textArea.getText()==null )  {					
+					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);				
+					}  else if ( selectedFile!=null) {
+						String s1 = "", s2 = "";
+						try {
+							BufferedReader b = new BufferedReader(new FileReader(selectedFile));
+							
+							while ((s1 = b.readLine()) != null) {
+								s2 += s1 + "\n";
+							}
+							b.close();
+						} catch (IOException e1) {
+							
+						}
+						if (s2==textArea.getText()) {
+							System.exit(0);
+							
+						} else {
+							int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
+									JOptionPane.YES_NO_CANCEL_OPTION);
+							if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option==JOptionPane.CLOSED_OPTION) {
+								setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+							} else {
+								System.exit(0);
+							}
+							
+						}
+						} else {
+					int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
 							JOptionPane.YES_NO_CANCEL_OPTION);
-					if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION) {
-						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-					} else {
-						setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					}
+					if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option==JOptionPane.CLOSED_OPTION) {
+						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);					
+				}else {
+					System.exit(0);
 				}
+						}
+					
 
 			}
 		});
