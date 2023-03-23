@@ -27,22 +27,8 @@ public class Find extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				 String searchText = searchField.getText();
-	                String text = textArea.getText();
-	                lastIndex = text.indexOf(searchText);
-	                if (lastIndex != -1) {
-	                    textArea.requestFocusInWindow();
-	                    textArea.setCaretPosition(lastIndex);
-	                    textArea.moveCaretPosition(lastIndex + searchText.length());
-	                } else {
-	                    JOptionPane.showMessageDialog(TextAreaSearch.this,
-	                            "Text not found", "Search",
-	                            JOptionPane.INFORMATION_MESSAGE);
-	                }
-	            }
-				
-			
-			
+
+	            }			
 		});
 		JButton findNext = new JButton ("Find next");
 		findNext.setBounds(120,80,90,30);

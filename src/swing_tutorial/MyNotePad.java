@@ -402,44 +402,41 @@ public class MyNotePad extends JFrame implements ActionListener {
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				
-				if(fileSave==null & selectedFile==null & textArea.getText()==null )  {					
-					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);				
-					}  else if ( selectedFile!=null) {
-						String s1 = "", s2 = "";
-						try {
-							BufferedReader b = new BufferedReader(new FileReader(selectedFile));
-							
-							while ((s1 = b.readLine()) != null) {
-								s2 += s1 + "\n";
-							}
-							b.close();
-						} catch (IOException e1) {
-							
-						}
-						if (s2==textArea.getText()) {
-							System.exit(0);
-							
-						} else {
-							int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
-									JOptionPane.YES_NO_CANCEL_OPTION);
-							if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option==JOptionPane.CLOSED_OPTION) {
-								setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-							} else {
-								System.exit(0);
-							}
-							
-						}
-						} else {
-					int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
-							JOptionPane.YES_NO_CANCEL_OPTION);
-					if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option==JOptionPane.CLOSED_OPTION) {
-						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);					
-				}else {
-					System.exit(0);
-				}
-						}
-					
+				if (fileSave == null && selectedFile == null && textArea.getText().isEmpty()) {
+				    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				} else if (selectedFile != null) {
+				    String s1 = "", s2 = "";
+				    try {
+				        BufferedReader b = new BufferedReader(new FileReader(selectedFile));
 
+				        while ((s1 = b.readLine()) != null) {
+				            s2 += s1 + "\n";
+				        }
+				        b.close();
+				    } catch (IOException e1) {
+
+				    }
+				    if (s2.equals(textArea.getText())) { // use equals() to compare strings
+				        System.exit(0);
+				    } else {
+				        int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
+				                JOptionPane.YES_NO_CANCEL_OPTION);
+				        if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION) {
+				            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				        } else {
+				            System.exit(0);
+				        }
+
+				    }
+				} else {
+				    int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
+				            JOptionPane.YES_NO_CANCEL_OPTION);
+				    if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION) {
+				        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				    } else {
+				        System.exit(0);
+				    }
+				}
 			}
 		});
 		setVisible(true);
