@@ -58,40 +58,10 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private int lastIndex = -1;
 
 	public MyNotePad() {
-		setTitle("Untitled");
-
-		JScrollPane scrollPane = new JScrollPane(getTextArea());
-
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-		wordCountButton.setEnabled(false);
-		wordCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
-
-		charCountButton.setEnabled(false);
-		charCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
-
-		getTextArea().setAutoscrolls(true);
-		getTextArea().setLineWrap(true);
-		getTextArea().setWrapStyleWord(true);
-		getTextArea().getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				updateWordAndCharCount();
-
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				updateWordAndCharCount();
-
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				updateWordAndCharCount();
-			}
-		});
+		// Set the tittle as untitiles
+		setTitle("Untitled"); 
+		// A scroll area for the vast text area
+		
 		// A menu bar for the file menus and options
 		JMenuBar menu = new JMenuBar();
 
@@ -202,6 +172,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		copyOption.setAccelerator(KeyStroke.getKeyStroke("control C"));
 		AbstractAction copyAction = new AbstractAction() {
 
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -218,6 +190,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		pasteOption.setAccelerator(KeyStroke.getKeyStroke("control V"));
 		AbstractAction pasteAction = new AbstractAction() {
 
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -231,6 +205,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		cutOption.setAccelerator(KeyStroke.getKeyStroke("control X"));
 		AbstractAction cutAction = new AbstractAction() {
 
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -243,6 +219,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenuItem selectAllOption = new JMenuItem("Select All");
 		selectAllOption.setAccelerator(KeyStroke.getKeyStroke("control A"));
 		AbstractAction selectAction = new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -304,6 +282,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		toolsMenu.add(findOption);
 		findOption.setAccelerator(KeyStroke.getKeyStroke("control F"));
 		AbstractAction findAction = new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -388,6 +368,39 @@ public class MyNotePad extends JFrame implements ActionListener {
 		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		statusBar.add(wordCountButton);
 		statusBar.add(charCountButton);
+		
+		
+		JScrollPane scrollPane = new JScrollPane(getTextArea());
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); // allow scrolling
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		wordCountButton.setEnabled(false);
+		wordCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
+
+		charCountButton.setEnabled(false);
+		charCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
+
+		getTextArea().setAutoscrolls(true);
+		getTextArea().setLineWrap(true);
+		getTextArea().setWrapStyleWord(true);
+		getTextArea().getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
+
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
+
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
+			}
+		});
 
 		// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setResizable(true);
@@ -481,21 +494,27 @@ public class MyNotePad extends JFrame implements ActionListener {
 		}
 
 	}
+	
 
-	private void openFile() {
+	
+	private void openFile() { // method to open a file 
+		//Open a dialog
 		int n = fileSelector.showOpenDialog(null);
-		if (n == JFileChooser.APPROVE_OPTION) {
+		if (n == JFileChooser.APPROVE_OPTION) { //Use the input of the file selector 
 
-			selectedFile = fileSelector.getSelectedFile();
+			selectedFile = fileSelector.getSelectedFile(); //set the file returned
 
 			try {
+				// try reading it using a buffered reader
 				BufferedReader b = new BufferedReader(new FileReader(selectedFile));
 				String s1 = "", s2 = "";
 				while ((s1 = b.readLine()) != null) {
 					s2 += s1 + "\n";
 				}
+				//Set the text area to show the text from the file
 				getTextArea().setText(s2);
 				b.close();
+				//Save the file
 				setTitle(selectedFile.getName());
 				fileSave = selectedFile;
 			} catch (IOException e1) {
