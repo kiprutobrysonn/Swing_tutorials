@@ -32,6 +32,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -58,7 +59,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private int lastIndex = -1;
 
 	public MyNotePad() {
-		// Set the tittle as untitiles
+		// Set the tittle as untitled
 		setTitle("Untitled"); 
 		// A scroll area for the vast text area
 		
@@ -360,6 +361,12 @@ public class MyNotePad extends JFrame implements ActionListener {
 		menu.add(editMenu);
 		menu.add(toolsMenu);
 		menu.add(helpMenu);
+		
+		final JPopupMenu popupmenu = new JPopupMenu("Edit");   
+        JMenuItem cut = new JMenuItem("Cut");  
+        JMenuItem copy = new JMenuItem("Copy");  
+        JMenuItem paste = new JMenuItem("Paste");  
+        popupmenu.add(cut); popupmenu.add(copy); popupmenu.add(paste);
 
 		statusBar.setPreferredSize(new Dimension(100, 30));
 		statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
