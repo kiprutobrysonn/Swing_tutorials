@@ -9,6 +9,8 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -59,7 +61,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private int lastIndex = -1;
 
 	public MyNotePad() {
-		// Set the tittle as untitled
+		// Set the title as untitled
 		setTitle("Untitled"); 
 		// A scroll area for the vast text area
 		
@@ -366,7 +368,18 @@ public class MyNotePad extends JFrame implements ActionListener {
         JMenuItem cut = new JMenuItem("Cut");  
         JMenuItem copy = new JMenuItem("Copy");  
         JMenuItem paste = new JMenuItem("Paste");  
+        
         popupmenu.add(cut); popupmenu.add(copy); popupmenu.add(paste);
+        textArea.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if(SwingUtilities.isRightMouseButton(e)) {
+                    popupmenu.show(textArea,e.getY(),e.getX());
+                } else if (SwingUtilities.isLeftMouseButton(e)) {
+                   
+                }
+            }
+        });
+
 
 		statusBar.setPreferredSize(new Dimension(100, 30));
 		statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -561,6 +574,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(UIManager.getSystemLookAndFeelClassName());
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
