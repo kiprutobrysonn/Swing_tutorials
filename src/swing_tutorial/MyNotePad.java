@@ -472,6 +472,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 				}
 			}
 		});
+		
 		setVisible(true);
 
 	}
@@ -574,12 +575,13 @@ public class MyNotePad extends JFrame implements ActionListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(UIManager.getSystemLookAndFeelClassName());
+		
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				note = new MyNotePad();
+				
 
 			}
 		});
