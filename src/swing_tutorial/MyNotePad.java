@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,12 +60,27 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private JFileChooser fileSelector = new JFileChooser();
 	static MyNotePad note;
 	private int lastIndex = -1;
+	
+	private void folderName() {
+		if (fileSave==null & selectedFile!=null) {
+			setTitle(selectedFile.getName());
+			
+		}else if(fileSave!=null & selectedFile==null) {
+			setTitle(fileSave.getName());
+			
+		} else if(fileSave==null & selectedFile==null) {
+			setTitle("Untitled");
+			
+		}
+	}
+	
+	
 
 	public MyNotePad() {
 		// Set the title as untitled
-		setTitle("Untitled"); 
+		setTitle("Untitled");
 		// A scroll area for the vast text area
-		
+
 		// A menu bar for the file menus and options
 		JMenuBar menu = new JMenuBar();
 
@@ -72,7 +88,73 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		JMenuItem newOption = new JMenuItem("New file");
-		newOption.addActionListener(this);
+		newOption.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if (textArea.getText() == "") {
+					textArea.setText("");
+					
+				} else {
+					if(selectedFile!=null) {
+						String s1 = "", s2 = "";
+						try {
+							BufferedReader b = new BufferedReader(new FileReader(selectedFile));
+
+							while ((s1 = b.readLine()) != null) {
+								s2 += s1 + "\n";
+							}
+							b.close();
+						} catch (IOException e1) {
+
+						}
+						if (s2.equals(textArea.getText())) { // use equals() to compare strings
+							textArea.setText("");
+							selectedFile=null;
+						} else {
+							int option = 0;
+							try {
+								option = JOptionPane.showConfirmDialog(null, "Do you want to quit without saving changes to  ?"+selectedFile.getCanonicalPath(), "Save",
+										JOptionPane.YES_NO_OPTION);
+							} catch (HeadlessException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+
+							if (JOptionPane.YES_OPTION == option) {
+								textArea.setText("");
+								
+
+							} else if (JOptionPane.NO_OPTION == option) {
+								saveFile();
+							}
+
+							
+						}
+					}
+					else {
+						int option = JOptionPane.showConfirmDialog(null, "Do you want to quit without saving changes to  ?", "Save",
+								JOptionPane.YES_NO_OPTION);
+						if (JOptionPane.YES_OPTION == option) {
+							textArea.setText("");
+							selectedFile=null;
+							fileSave=null;
+							folderName();
+
+						} else if (JOptionPane.NO_OPTION == option) {
+							saveFile();
+						}
+					}
+					
+				}
+
+			}
+
+		});
 
 		JMenuItem newWindowOption = new JMenuItem("New Window");
 		newWindowOption.setAccelerator(KeyStroke.getKeyStroke("control N"));
@@ -363,23 +445,24 @@ public class MyNotePad extends JFrame implements ActionListener {
 		menu.add(editMenu);
 		menu.add(toolsMenu);
 		menu.add(helpMenu);
-		
-		final JPopupMenu popupmenu = new JPopupMenu("Edit");   
-        JMenuItem cut = new JMenuItem("Cut");  
-        JMenuItem copy = new JMenuItem("Copy");  
-        JMenuItem paste = new JMenuItem("Paste");  
-        
-        popupmenu.add(cut); popupmenu.add(copy); popupmenu.add(paste);
-        textArea.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if(SwingUtilities.isRightMouseButton(e)) {
-                    popupmenu.show(textArea,e.getY(),e.getX());
-                } else if (SwingUtilities.isLeftMouseButton(e)) {
-                   
-                }
-            }
-        });
 
+		final JPopupMenu popupmenu = new JPopupMenu("Edit");
+		JMenuItem cut = new JMenuItem("Cut");
+		JMenuItem copy = new JMenuItem("Copy");
+		JMenuItem paste = new JMenuItem("Paste");
+
+		popupmenu.add(cut);
+		popupmenu.add(copy);
+		popupmenu.add(paste);
+		textArea.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					popupmenu.show(textArea, e.getY(), e.getX());
+				} else if (SwingUtilities.isLeftMouseButton(e)) {
+
+				}
+			}
+		});
 
 		statusBar.setPreferredSize(new Dimension(100, 30));
 		statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -388,12 +471,11 @@ public class MyNotePad extends JFrame implements ActionListener {
 		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		statusBar.add(wordCountButton);
 		statusBar.add(charCountButton);
-		
-		
+
 		JScrollPane scrollPane = new JScrollPane(getTextArea());
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); // allow scrolling
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		
+
 		wordCountButton.setEnabled(false);
 		wordCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
 
@@ -434,45 +516,47 @@ public class MyNotePad extends JFrame implements ActionListener {
 		setLocationRelativeTo(null);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				
+
 				if (fileSave == null && selectedFile == null && textArea.getText().isEmpty()) {
-				    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} else if (selectedFile != null) {
-				    String s1 = "", s2 = "";
-				    try {
-				        BufferedReader b = new BufferedReader(new FileReader(selectedFile));
+					String s1 = "", s2 = "";
+					try {
+						BufferedReader b = new BufferedReader(new FileReader(selectedFile));
 
-				        while ((s1 = b.readLine()) != null) {
-				            s2 += s1 + "\n";
-				        }
-				        b.close();
-				    } catch (IOException e1) {
+						while ((s1 = b.readLine()) != null) {
+							s2 += s1 + "\n";
+						}
+						b.close();
+					} catch (IOException e1) {
 
-				    }
-				    if (s2.equals(textArea.getText())) { // use equals() to compare strings
-				        System.exit(0);
-				    } else {
-				        int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
-				                JOptionPane.YES_NO_CANCEL_OPTION);
-				        if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION) {
-				            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				        } else {
-				            System.exit(0);
-				        }
+					}
+					if (s2.equals(textArea.getText())) { // use equals() to compare strings
+						System.exit(0);
+					} else {
+						int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
+								JOptionPane.YES_NO_CANCEL_OPTION);
+						if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION
+								|| option == JOptionPane.CLOSED_OPTION) {
+							setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+						} else {
+							System.exit(0);
+						}
 
-				    }
+					}
 				} else {
-				    int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
-				            JOptionPane.YES_NO_CANCEL_OPTION);
-				    if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION) {
-				        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				    } else {
-				        System.exit(0);
-				    }
+					int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
+							JOptionPane.YES_NO_CANCEL_OPTION);
+					if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION
+							|| option == JOptionPane.CLOSED_OPTION) {
+						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					} else {
+						System.exit(0);
+					}
 				}
 			}
 		});
-		
+
 		setVisible(true);
 
 	}
@@ -515,15 +599,13 @@ public class MyNotePad extends JFrame implements ActionListener {
 		}
 
 	}
-	
 
-	
-	private void openFile() { // method to open a file 
-		//Open a dialog
+	private void openFile() { // method to open a file
+		// Open a dialog
 		int n = fileSelector.showOpenDialog(null);
-		if (n == JFileChooser.APPROVE_OPTION) { //Use the input of the file selector 
+		if (n == JFileChooser.APPROVE_OPTION) { // Use the input of the file selector
 
-			selectedFile = fileSelector.getSelectedFile(); //set the file returned
+			selectedFile = fileSelector.getSelectedFile(); // set the file returned
 
 			try {
 				// try reading it using a buffered reader
@@ -532,10 +614,10 @@ public class MyNotePad extends JFrame implements ActionListener {
 				while ((s1 = b.readLine()) != null) {
 					s2 += s1 + "\n";
 				}
-				//Set the text area to show the text from the file
+				// Set the text area to show the text from the file
 				getTextArea().setText(s2);
 				b.close();
-				//Save the file
+				// Save the file
 				setTitle(selectedFile.getName());
 				fileSave = selectedFile;
 			} catch (IOException e1) {
@@ -575,13 +657,11 @@ public class MyNotePad extends JFrame implements ActionListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				note = new MyNotePad();
-				
 
 			}
 		});
