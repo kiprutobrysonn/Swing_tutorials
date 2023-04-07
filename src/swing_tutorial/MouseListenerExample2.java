@@ -14,7 +14,7 @@ public class MouseListenerExample2 extends Frame implements MouseListener{
         Graphics g=getGraphics();  
         g.setColor(Color.BLUE);  
         g.fillOval(e.getX(),e.getY(),30,30);  
-    }  
+    }   
     public void mouseEntered(MouseEvent e) {}  
     public void mouseExited(MouseEvent e) {}  
     public void mousePressed(MouseEvent e) {}  

@@ -5,10 +5,13 @@ import java.awt.Color;
 import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -32,6 +35,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -56,42 +60,27 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private JFileChooser fileSelector = new JFileChooser();
 	static MyNotePad note;
 	private int lastIndex = -1;
+	
+	private void folderName() {
+		if (fileSave==null & selectedFile!=null) {
+			setTitle(selectedFile.getName());
+			
+		}else if(fileSave!=null & selectedFile==null) {
+			setTitle(fileSave.getName());
+			
+		} else if(fileSave==null & selectedFile==null) {
+			setTitle("Untitled");
+			
+		}
+	}
+	
+	
 
 	public MyNotePad() {
+		// Set the title as untitled
 		setTitle("Untitled");
+		// A scroll area for the vast text area
 
-		JScrollPane scrollPane = new JScrollPane(getTextArea());
-
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-		wordCountButton.setEnabled(false);
-		wordCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
-
-		charCountButton.setEnabled(false);
-		charCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
-
-		getTextArea().setAutoscrolls(true);
-		getTextArea().setLineWrap(true);
-		getTextArea().setWrapStyleWord(true);
-		getTextArea().getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				updateWordAndCharCount();
-
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				updateWordAndCharCount();
-
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				updateWordAndCharCount();
-			}
-		});
 		// A menu bar for the file menus and options
 		JMenuBar menu = new JMenuBar();
 
@@ -99,7 +88,73 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		JMenuItem newOption = new JMenuItem("New file");
-		newOption.addActionListener(this);
+		newOption.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if (textArea.getText() == "") {
+					textArea.setText("");
+					
+				} else {
+					if(selectedFile!=null) {
+						String s1 = "", s2 = "";
+						try {
+							BufferedReader b = new BufferedReader(new FileReader(selectedFile));
+
+							while ((s1 = b.readLine()) != null) {
+								s2 += s1 + "\n";
+							}
+							b.close();
+						} catch (IOException e1) {
+
+						}
+						if (s2.equals(textArea.getText())) { // use equals() to compare strings
+							textArea.setText("");
+							selectedFile=null;
+						} else {
+							int option = 0;
+							try {
+								option = JOptionPane.showConfirmDialog(null, "Do you want to quit without saving changes to  ?"+selectedFile.getCanonicalPath(), "Save",
+										JOptionPane.YES_NO_OPTION);
+							} catch (HeadlessException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+
+							if (JOptionPane.YES_OPTION == option) {
+								textArea.setText("");
+								
+
+							} else if (JOptionPane.NO_OPTION == option) {
+								saveFile();
+							}
+
+							
+						}
+					}
+					else {
+						int option = JOptionPane.showConfirmDialog(null, "Do you want to quit without saving changes to  ?", "Save",
+								JOptionPane.YES_NO_OPTION);
+						if (JOptionPane.YES_OPTION == option) {
+							textArea.setText("");
+							selectedFile=null;
+							fileSave=null;
+							folderName();
+
+						} else if (JOptionPane.NO_OPTION == option) {
+							saveFile();
+						}
+					}
+					
+				}
+
+			}
+
+		});
 
 		JMenuItem newWindowOption = new JMenuItem("New Window");
 		newWindowOption.setAccelerator(KeyStroke.getKeyStroke("control N"));
@@ -202,6 +257,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		copyOption.setAccelerator(KeyStroke.getKeyStroke("control C"));
 		AbstractAction copyAction = new AbstractAction() {
 
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -218,6 +275,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		pasteOption.setAccelerator(KeyStroke.getKeyStroke("control V"));
 		AbstractAction pasteAction = new AbstractAction() {
 
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -231,6 +290,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		cutOption.setAccelerator(KeyStroke.getKeyStroke("control X"));
 		AbstractAction cutAction = new AbstractAction() {
 
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -243,6 +304,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		JMenuItem selectAllOption = new JMenuItem("Select All");
 		selectAllOption.setAccelerator(KeyStroke.getKeyStroke("control A"));
 		AbstractAction selectAction = new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -304,6 +367,8 @@ public class MyNotePad extends JFrame implements ActionListener {
 		toolsMenu.add(findOption);
 		findOption.setAccelerator(KeyStroke.getKeyStroke("control F"));
 		AbstractAction findAction = new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -381,6 +446,24 @@ public class MyNotePad extends JFrame implements ActionListener {
 		menu.add(toolsMenu);
 		menu.add(helpMenu);
 
+		final JPopupMenu popupmenu = new JPopupMenu("Edit");
+		JMenuItem cut = new JMenuItem("Cut");
+		JMenuItem copy = new JMenuItem("Copy");
+		JMenuItem paste = new JMenuItem("Paste");
+
+		popupmenu.add(cut);
+		popupmenu.add(copy);
+		popupmenu.add(paste);
+		textArea.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					popupmenu.show(textArea, e.getY(), e.getX());
+				} else if (SwingUtilities.isLeftMouseButton(e)) {
+
+				}
+			}
+		});
+
 		statusBar.setPreferredSize(new Dimension(100, 30));
 		statusBar.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		statusBar.setBackground(Color.gray);
@@ -388,6 +471,38 @@ public class MyNotePad extends JFrame implements ActionListener {
 		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		statusBar.add(wordCountButton);
 		statusBar.add(charCountButton);
+
+		JScrollPane scrollPane = new JScrollPane(getTextArea());
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); // allow scrolling
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		wordCountButton.setEnabled(false);
+		wordCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
+
+		charCountButton.setEnabled(false);
+		charCountButton.setBorder(BorderFactory.createEmptyBorder(1, 1, 0, 0));
+
+		getTextArea().setAutoscrolls(true);
+		getTextArea().setLineWrap(true);
+		getTextArea().setWrapStyleWord(true);
+		getTextArea().getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
+
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
+
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				updateWordAndCharCount();
+			}
+		});
 
 		// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setResizable(true);
@@ -401,44 +516,47 @@ public class MyNotePad extends JFrame implements ActionListener {
 		setLocationRelativeTo(null);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				
+
 				if (fileSave == null && selectedFile == null && textArea.getText().isEmpty()) {
-				    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} else if (selectedFile != null) {
-				    String s1 = "", s2 = "";
-				    try {
-				        BufferedReader b = new BufferedReader(new FileReader(selectedFile));
+					String s1 = "", s2 = "";
+					try {
+						BufferedReader b = new BufferedReader(new FileReader(selectedFile));
 
-				        while ((s1 = b.readLine()) != null) {
-				            s2 += s1 + "\n";
-				        }
-				        b.close();
-				    } catch (IOException e1) {
+						while ((s1 = b.readLine()) != null) {
+							s2 += s1 + "\n";
+						}
+						b.close();
+					} catch (IOException e1) {
 
-				    }
-				    if (s2.equals(textArea.getText())) { // use equals() to compare strings
-				        System.exit(0);
-				    } else {
-				        int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
-				                JOptionPane.YES_NO_CANCEL_OPTION);
-				        if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION) {
-				            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				        } else {
-				            System.exit(0);
-				        }
+					}
+					if (s2.equals(textArea.getText())) { // use equals() to compare strings
+						System.exit(0);
+					} else {
+						int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
+								JOptionPane.YES_NO_CANCEL_OPTION);
+						if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION
+								|| option == JOptionPane.CLOSED_OPTION) {
+							setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+						} else {
+							System.exit(0);
+						}
 
-				    }
+					}
 				} else {
-				    int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
-				            JOptionPane.YES_NO_CANCEL_OPTION);
-				    if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION) {
-				        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				    } else {
-				        System.exit(0);
-				    }
+					int option = JOptionPane.showConfirmDialog(null, "Do you want to exit without saving", "Exit",
+							JOptionPane.YES_NO_CANCEL_OPTION);
+					if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION
+							|| option == JOptionPane.CLOSED_OPTION) {
+						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					} else {
+						System.exit(0);
+					}
 				}
 			}
 		});
+
 		setVisible(true);
 
 	}
@@ -482,20 +600,24 @@ public class MyNotePad extends JFrame implements ActionListener {
 
 	}
 
-	private void openFile() {
+	private void openFile() { // method to open a file
+		// Open a dialog
 		int n = fileSelector.showOpenDialog(null);
-		if (n == JFileChooser.APPROVE_OPTION) {
+		if (n == JFileChooser.APPROVE_OPTION) { // Use the input of the file selector
 
-			selectedFile = fileSelector.getSelectedFile();
+			selectedFile = fileSelector.getSelectedFile(); // set the file returned
 
 			try {
+				// try reading it using a buffered reader
 				BufferedReader b = new BufferedReader(new FileReader(selectedFile));
 				String s1 = "", s2 = "";
 				while ((s1 = b.readLine()) != null) {
 					s2 += s1 + "\n";
 				}
+				// Set the text area to show the text from the file
 				getTextArea().setText(s2);
 				b.close();
+				// Save the file
 				setTitle(selectedFile.getName());
 				fileSave = selectedFile;
 			} catch (IOException e1) {
