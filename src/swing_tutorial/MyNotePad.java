@@ -79,8 +79,6 @@ public class MyNotePad extends JFrame implements ActionListener {
 	public MyNotePad() {
 		// Set the title as untitled
 		setTitle("Untitled");
-		// A scroll area for the vast text area
-
 		// A menu bar for the file menus and options
 		JMenuBar menu = new JMenuBar();
 
