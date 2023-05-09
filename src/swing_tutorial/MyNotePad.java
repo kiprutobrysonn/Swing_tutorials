@@ -2,7 +2,6 @@ package swing_tutorial;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.HeadlessException;
@@ -25,7 +24,6 @@ import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -60,21 +58,21 @@ public class MyNotePad extends JFrame implements ActionListener {
 	private JFileChooser fileSelector = new JFileChooser();
 	static MyNotePad note;
 	private int lastIndex = -1;
-	
+
 	private void folderName() {
 		if (fileSave==null & selectedFile!=null) {
 			setTitle(selectedFile.getName());
-			
+
 		}else if(fileSave!=null & selectedFile==null) {
 			setTitle(fileSave.getName());
-			
+
 		} else if(fileSave==null & selectedFile==null) {
 			setTitle("Untitled");
-			
+
 		}
 	}
-	
-	
+
+
 
 	public MyNotePad() {
 		// Set the title as untitled
@@ -93,7 +91,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 				// TODO Auto-generated method stub
 				if (textArea.getText() == "") {
 					textArea.setText("");
-					
+
 				} else {
 					if(selectedFile!=null) {
 						String s1 = "", s2 = "";
@@ -125,13 +123,13 @@ public class MyNotePad extends JFrame implements ActionListener {
 
 							if (JOptionPane.YES_OPTION == option) {
 								textArea.setText("");
-								
+
 
 							} else if (JOptionPane.NO_OPTION == option) {
 								saveFile();
 							}
 
-							
+
 						}
 					}
 					else {
@@ -147,7 +145,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 							saveFile();
 						}
 					}
-					
+
 				}
 
 			}
@@ -372,6 +370,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				new Thread() {
+					@Override
 					public void run() {
 
 					}
@@ -453,6 +452,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 		popupmenu.add(copy);
 		popupmenu.add(paste);
 		textArea.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e)) {
 					popupmenu.show(textArea, e.getY(), e.getX());
@@ -513,10 +513,11 @@ public class MyNotePad extends JFrame implements ActionListener {
 		setSize(500, 500);
 		setLocationRelativeTo(null);
 		addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 
 				if (fileSave == null && selectedFile == null && textArea.getText().isEmpty()) {
-					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				} else if (selectedFile != null) {
 					String s1 = "", s2 = "";
 					try {
@@ -536,7 +537,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 								JOptionPane.YES_NO_CANCEL_OPTION);
 						if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION
 								|| option == JOptionPane.CLOSED_OPTION) {
-							setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+							setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 						} else {
 							System.exit(0);
 						}
@@ -547,7 +548,7 @@ public class MyNotePad extends JFrame implements ActionListener {
 							JOptionPane.YES_NO_CANCEL_OPTION);
 					if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.NO_OPTION
 							|| option == JOptionPane.CLOSED_OPTION) {
-						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+						setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 					} else {
 						System.exit(0);
 					}

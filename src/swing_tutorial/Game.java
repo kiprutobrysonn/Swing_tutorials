@@ -8,10 +8,10 @@ import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class Game extends JFrame implements KeyListener{
-	JLabel box = new JLabel();
+	JPanel box = new JPanel();
 	ImageIcon icon ;
 	public Game() {
 		
@@ -22,7 +22,7 @@ public class Game extends JFrame implements KeyListener{
 		Image img = icon.getImage();
 		Image newImg = img.getScaledInstance(box.getWidth(), box.getHeight(), Image.SCALE_SMOOTH); // Scale the Image to fit the label
 		ImageIcon newIcon = new ImageIcon(newImg); // Create a new ImageIcon with the scaled Image
-		box.setIcon(newIcon);
+		
 
 		add(box);
 		this.addKeyListener(this);
