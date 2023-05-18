@@ -41,8 +41,8 @@ public class DragDrop  extends JFrame{
 		label.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e)) {
-					Y= e.getY();
-							X=e.getX();
+					e.getY();
+							e.getX();
 				} else if (SwingUtilities.isLeftMouseButton(e)) {
 
 				}
